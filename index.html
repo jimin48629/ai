@@ -3,73 +3,1612 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI Creative Agent</title>
-</head>
-<body>
-  <p id="status" role="status" aria-live="polite">채팅에 연결하는 중입니다...</p>
-  <div id="webchat" style="height: 600px"></div>
-  <script src="https://cdn.botframework.com/botframework-webchat/4.18.0/webchat.js"></script>
-  <script>
-    const BROKER_URL = "https://dl-broker-juwon-4jt3z.azurewebsites.net/api/directlineToken";
-    const SEALED = "jgmnpP_NQgsZmWCbW-bEtRuokHS1_Uvc7YPzNyZ5CKsF6n-n05-lQ2pYDDYnfyO8EDO0DuIxxZFK_4khD3ggBNtqJ8Btb5bKx5_KXu_N4uBmikaqrTOsFfW9RMzDulsxuvba9LmG2eTJCu39sPsuSKQgjBlR3Ri84om46iQmImdV_PacV-Aw0Kyoac5PSvTipA2Ai6lszyhyBROeGu6LxbfNm88QJ49d4J5Wp6mBHCemetoFVnyaA6OGFn7WdeUyhkD6SnqMjlVlnVJQWv13JEIUsDsoJYGr_mejZZmSya_5ownIa2-8s0zMQSdOnooksh_CEUe_cfgzooYecXwk2DY0_puLa2hq_odm89exO6bgYjoQZlsWpUURGyRDT6Mz1qVsGUTX7dtDHiwx5mNkGDiF_FEM4ODpgM-XQX1KAoQ7SqVoI5FDO4yJ_g3Y86jOI9F7QI7YxH4tniQaw4Et3pAsvCZL3eaG1sddiODOP96JwlL7FTXY4ZfSOWlteqMc2GpgwC99qBPDGIDoQzdfQO1PYEK3T2TPEC_R8eRgD4FB6C7T484YGrV8HDlPonTQbWsV25nKb9jCdtWEMf09KhXvHsUK9nRbGNOhl8fSxZs8xgZS_-GbOgSKYmc0S4McS6TS2x8bqZx4dvhd0xicfg";
-    const status = document.getElementById("status");
-
-    function showError(message) {
-      status.hidden = false;
-      status.textContent = message;
+  <title>AI Creative Agent Team — One idea, five deliverables.</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
+  <style>
+    :root {
+      --bg: #F7F7FB;
+      --text: #14142B;
+      --muted: #6B6B80;
+      --line: rgba(20,20,43,.08);
+      --font-sans: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Instrument Serif', serif;
     }
 
-    async function connect() {
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text);
+      word-break: keep-all;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 노이즈 질감 오버레이 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: .04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* 브랜드 그라데이션 글자 */
+    .grad-text {
+      background: linear-gradient(120deg, #4F6BFF, #8B5CF6 40%, #EC4899 70%, #FF7A45);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* 빛 번짐 블롭 배경 */
+    .mesh {
+      background: radial-gradient(circle at 16% 18%, #8EA2FF 0 14%, transparent 32%), 
+                  radial-gradient(circle at 78% 9%, #FFB3D9 0 13%, transparent 30%), 
+                  radial-gradient(circle at 66% 62%, #FFD3A8 0 16%, transparent 34%), 
+                  radial-gradient(circle at 25% 74%, #9BE3FF 0 15%, transparent 32%), 
+                  radial-gradient(circle at 50% 32%, #C4A5FF 0 16%, transparent 36%), 
+                  linear-gradient(135deg, #fff, #F5F0FF 40%, #FFF7F0);
+    }
+
+    /* 유리 카드 스타일 */
+    .glass {
+      background: rgba(255,255,255,.55);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      backdrop-filter: blur(24px) saturate(160%);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 30px 80px -30px rgba(76,70,160,.25), inset 0 1px 1px #fff;
+    }
+
+    /* 1. 내비게이션 */
+    .nav-wrap {
+      position: fixed;
+      top: 16px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+      pointer-events: none;
+      padding: 0 12px;
+    }
+    .nav {
+      pointer-events: auto;
+      width: min(1080px, 100% - 24px);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.65);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      backdrop-filter: blur(24px) saturate(160%);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 20px 40px -15px rgba(76,70,160,.15);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(120deg, #6E8BFF, #FF8AC8);
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover {
+      color: var(--text);
+    }
+    .btn-black {
+      background: #14142B;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: transform .2s, opacity .2s;
+    }
+    .btn-black:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+
+    /* 공통 섹션 스타일 및 스크롤 마진 */
+    section {
+      scroll-margin-top: 96px;
+    }
+
+    /* 스크롤 등장 효과 기본 상태 */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .8s cubic-bezier(.2,1.3,.3,1), transform .8s cubic-bezier(.2,1.3,.3,1);
+    }
+    [data-reveal].is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 2. 히어로 섹션 */
+    .hero-section {
+      padding: 100px 12px 60px 12px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .hero-panel {
+      border-radius: 36px;
+      padding: 48px 32px 32px 32px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(255,255,255,.9);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 20px -10px rgba(76,70,160,.1);
+    }
+    .badge-serif {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 20px;
+      margin-left: 4px;
+      color: #5B4BC4;
+    }
+    .hero-title {
+      font-size: clamp(40px, 6vw, 88px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      text-wrap: balance;
+      max-width: 960px;
+      margin-bottom: 16px;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 1.8vw, 20px);
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+    .logo-strip {
+      margin-top: 32px;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      opacity: .8;
+      white-space: nowrap;
+      overflow-x: auto;
+      max-width: 100%;
+      padding-bottom: 4px;
+    }
+
+    /* 대화창 (히어로 안의 실제 채팅) */
+    .chat-card {
+      width: min(860px, 100%);
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      position: relative;
+      transition: height .4s cubic-bezier(.2,1.3,.3,1);
+    }
+    .chat-card > * { flex: none; }
+    .chat-card > #webchat { height: 200px; min-height: 0; }
+    body.is-started .chat-card { height: calc(100svh - 112px); }
+    body.is-started .chat-card > #webchat { flex: 1 1 0; height: auto; min-height: 0; }
+
+    .chat-header {
+      height: 52px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,.4);
+      background: rgba(255,255,255,.3);
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
+    }
+    .chat-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(20,20,43,.15);
+    }
+    .chat-title-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .conn-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ccc;
+      transition: background .3s;
+    }
+    body.is-connected .conn-status-dot {
+      background: #10B981;
+      box-shadow: 0 0 8px rgba(16,185,129,.5);
+    }
+    .btn-glass-sm {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(255,255,255,.9);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .chat-foot {
+      padding: 16px 20px 20px 20px;
+      border-top: 1px solid rgba(255,255,255,.4);
+      background: rgba(255,255,255,.3);
+      border-bottom-left-radius: 28px;
+      border-bottom-right-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .example-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .example-chips::-webkit-scrollbar { display: none; }
+    .chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(255,255,255,.9);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all .2s;
+      flex: none;
+    }
+    .chip:hover {
+      background: #fff;
+      border-color: #5B4BC4;
+      color: #5B4BC4;
+    }
+
+    /* 작업 중 표시 바 및 에러 */
+    .working-status {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #5B4BC4;
+      padding: 4px 8px;
+    }
+    body.is-working .working-status { display: flex; }
+    .working-dots span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #5B4BC4;
+      animation: bounce 1.2s infinite ease-in-out both;
+      margin-right: 3px;
+    }
+    .working-dots span:nth-child(2) { animation-delay: .2s; }
+    .working-dots span:nth-child(3) { animation-delay: .4s; }
+    .working-dots span:nth-child(4) { animation-delay: .6s; }
+    .working-dots span:nth-child(5) { animation-delay: .8s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1.0); }
+    }
+
+    .error-banner {
+      display: none;
+      padding: 12px 16px;
+      background: rgba(254, 226, 226, .8);
+      border: 1px solid #f87171;
+      border-radius: 14px;
+      font-size: 13px;
+      color: #991b1b;
+      gap: 8px;
+      flex-direction: column;
+    }
+    body.is-error .error-banner { display: flex; }
+
+    /* 입력창 컴포저 */
+    .composer {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 28px;
+      padding: 8px 12px 8px 20px;
+      box-shadow: 0 10px 30px -10px rgba(76,70,160,.12);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .composer:focus-within {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px -10px rgba(76,70,160,.2);
+      background: #fff;
+    }
+    .composer textarea {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--text);
+      resize: none;
+      max-height: 150px;
+      line-height: 1.5;
+      padding: 6px 0;
+    }
+    .composer textarea::placeholder {
+      color: var(--muted);
+    }
+    .send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #14142B;
+      color: #fff;
+      border: none;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: opacity .2s, transform .2s;
+      flex: none;
+      margin-left: 8px;
+    }
+    .send-btn:disabled {
+      opacity: .3;
+      cursor: not-allowed;
+    }
+    .send-btn:not(:disabled):hover {
+      transform: scale(1.05);
+    }
+
+    .chat-footnote {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* 3. 숫자 띠 섹션 */
+    .stats-section {
+      max-width: 1200px;
+      margin: -40px auto 80px auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .stat-card {
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .stat-num {
+      font-size: clamp(36px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* 섹션 공통 제목 스타일 */
+    .section-header {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 56px auto;
+      padding: 0 24px;
+    }
+    .sec-sub-serif {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 24px;
+      color: #5B4BC4;
+      margin-bottom: 8px;
+    }
+    .sec-title {
+      font-size: clamp(32px, 4.2vw, 56px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      text-wrap: balance;
+    }
+
+    /* 4. 기능 벤토 그리드(#features) */
+    .features-section {
+      padding: 80px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+      padding: 0 24px;
+    }
+    .bento-card {
+      border-radius: 28px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+      min-height: 360px;
+      transition: transform .3s cubic-bezier(.2,1.3,.3,1), box-shadow .3s;
+    }
+    .bento-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 35px 90px -30px rgba(76,70,160,.3);
+    }
+    .bento-card.span-3 { grid-column: span 3; }
+    .bento-card.span-2 { grid-column: span 2; }
+    @media (max-width: 900px) {
+      .bento-card.span-3, .bento-card.span-2 { grid-column: span 6; }
+    }
+
+    .bento-tag {
+      font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #5B4BC4;
+      background: rgba(91,75,196,.08);
+      padding: 6px 12px;
+      border-radius: 999px;
+      align-self: flex-start;
+      margin-bottom: 20px;
+    }
+    .bento-heading h3 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .bento-heading p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* 벤토 카드 목업 프리뷰 */
+    .mockup-area {
+      margin-top: 24px;
+      height: 140px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.6);
+      border: 1px solid rgba(255,255,255,.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .bento-card:hover .mockup-slide-stack {
+      transform: translateY(-4px) rotate(1deg);
+    }
+    .mockup-slide-stack {
+      width: 100px;
+      height: 70px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+      position: relative;
+      transition: transform .4s;
+    }
+    .mockup-slide-stack::before, .mockup-slide-stack::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #fafafa;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,.05);
+    }
+    .mockup-slide-stack::before { transform: translate(-8px, -6px) rotate(-4deg); z-index: -1; }
+    .mockup-slide-stack::after { transform: translate(8px, -6px) rotate(4deg); z-index: -2; background: #f0f0f5; }
+
+    .mockup-poster {
+      width: 80px;
+      height: 110px;
+      background: linear-gradient(135deg, #FF4FA3, #5B3DF5);
+      border-radius: 8px;
+      box-shadow: 0 12px 30px rgba(91,61,245,.3);
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .bento-card:hover .mockup-poster {
+      transform: scale(1.05) rotate(-2deg);
+      transition: transform .4s;
+    }
+
+    .mockup-doc {
+      width: 110px;
+      height: 90px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+      padding: 12px;
+      border-top: 6px solid #5B3DF5;
+    }
+    .mockup-doc-line {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin-bottom: 6px;
+      width: 100%;
+    }
+    .mockup-doc-line:nth-child(2) { width: 70%; }
+    .mockup-doc-line:nth-child(3) { width: 85%; }
+
+    .mockup-browser {
+      width: 140px;
+      height: 95px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .mockup-browser-bar {
+      height: 18px;
+      background: #f1f1f4;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding-left: 8px;
+    }
+    .mockup-browser-bar span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d1d1d8;
+    }
+
+    .mockup-budget {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      font-size: 16px;
+      color: #14142B;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .mockup-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 48px;
+    }
+    .mockup-bar {
+      width: 14px;
+      background: linear-gradient(to top, #6E8BFF, #A77BFF);
+      border-radius: 4px 4px 0 0;
+      height: 20px;
+      transition: height 1s cubic-bezier(.2,1.3,.3,1);
+    }
+    body.is-revealed .mockup-bar:nth-child(1) { height: 35px; }
+    body.is-revealed .mockup-bar:nth-child(2) { height: 48px; }
+    body.is-revealed .mockup-bar:nth-child(3) { height: 28px; }
+    body.is-revealed .mockup-bar:nth-child(4) { height: 42px; }
+
+
+    /* 5. 작동 방식(#how) */
+    .how-section {
+      padding: 80px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .how-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .how-grid { grid-template-columns: 1fr; }
+    }
+    .orbit-card {
+      border-radius: 28px;
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 440px;
+    }
+    /* 작동 방식 궤도 스타일(지정된 규칙 그대로 준수) */
+    .orbit { --r: 150px; position: relative; width: calc(var(--r) * 2); aspect-ratio: 1; margin: 48px auto; }
+    .orbit-ring { position: absolute; inset: 0; border-radius: 50%; border: 1px dashed rgba(20,20,43,.16); animation: orbit-spin 40s linear infinite; }
+    .orbit .agent { position: absolute; left: 50%; top: 50%; transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))); }
+    .orbit .agent b { position: absolute; translate: -50% -50%; white-space: nowrap; padding: 8px 12px; border-radius: 999px; font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; color: #5B4BC4; background: rgba(255,255,255,.8); border: 1px solid #fff; animation: orbit-spin 40s linear infinite reverse; box-shadow: 0 8px 20px rgba(91,75,196,.15); }
+    .orbit .leader { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 112px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: linear-gradient(135deg, #4F6BFF, #8B5CF6); color: #fff; box-shadow: 0 15px 35px rgba(91,61,245,.3); }
+    @keyframes orbit-spin { to { rotate: 360deg; } }
+    @media (max-width: 600px) { .orbit { --r: 100px; } .orbit .agent b { font-size: 10px; padding: 6px 9px; } .orbit .leader { width: 84px; } }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .step-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #14142B;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      display: grid;
+      place-items: center;
+      flex: none;
+      box-shadow: 0 10px 20px rgba(20,20,43,.2);
+    }
+    .step-content h4 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+
+    /* 6. 디자인(#design) - 화면 끝까지 꽉 찬 진한 그라데이션 띠 */
+    .design-section {
+      background: linear-gradient(120deg, #5B3DF5, #FF4FA3, #FF9F45);
+      color: #fff;
+      padding: 100px 24px;
+      margin: 80px 0;
+      text-align: center;
+    }
+    .design-header {
+      max-width: 800px;
+      margin: 0 auto 56px auto;
+    }
+    .design-header .sec-sub-serif {
+      color: rgba(255,255,255,.85);
+    }
+    .design-header .sec-title {
+      color: #fff;
+    }
+    .design-header p {
+      font-size: 18px;
+      color: rgba(255,255,255,.8);
+      margin-top: 12px;
+    }
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .theme-card {
+      background: rgba(255,255,255,.15);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform .3s;
+    }
+    .theme-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,.22);
+    }
+    .theme-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .theme-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.5);
+    }
+    .theme-name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .theme-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,.8);
+      line-height: 1.4;
+    }
+
+
+    /* 7. 준비된 프롬프트 마키 섹션 */
+    .prompts-section {
+      padding: 60px 0;
+      overflow: hidden;
+    }
+    .marquee-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 16px;
+      width: max-content;
+      animation: marquee 35s linear infinite;
+    }
+    .marquee-track.reverse {
+      animation-direction: reverse;
+    }
+    @keyframes marquee {
+      to { transform: translateX(-50%); }
+    }
+    .prompt-chip {
+      padding: 12px 24px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.7);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.9);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 10px 25px -10px rgba(76,70,160,.1);
+      transition: all .2s;
+    }
+    .prompt-chip:hover {
+      background: #14142B;
+      color: #fff;
+      transform: scale(1.03);
+    }
+
+
+    /* 8. 마지막 CTA 섹션 */
+    .cta-section {
+      padding: 60px 12px 100px 12px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .cta-panel {
+      border-radius: 36px;
+      padding: 80px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-title {
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+
+    /* 9. 푸터 */
+    footer {
+      text-align: center;
+      padding: 40px 24px 60px 24px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+
+    /* 10. 떠 있는 알림 (Floating Pill) */
+    .floating-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.85);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.95);
+      box-shadow: 0 20px 40px -15px rgba(76,70,160,.25);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+    }
+    .floating-pill.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .floating-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5B4BC4;
+    }
+
+
+    /* Web Chat 4.18 및 첨부 파일 커스텀 스타일 (제공된 필수 CSS 포함) */
+    .chat-card > #webchat .webchat__typing-indicator { display: none !important; }
+    .chat-card > #webchat .webchat__stacked-layout:not(.webchat__stacked-layout--from-user) .webchat__stacked-layout__status { display: none; }
+    .chat-card > #webchat .webchat__stacked-layout__attachment-row { margin-top: 8px !important; }
+    .chat-card > #webchat .webchat__stacked-layout__attachment, .chat-card > #webchat .webchat__stacked-layout__attachment .webchat__bubble__content { background: none !important; border: 0 !important; overflow: visible !important; }
+    .chat-card > #webchat .webchat__stacked-layout__content:has(.webchat__fileContent) { overflow: visible !important; }
+    .chat-card > #webchat .webchat__fileContent { padding: 0 !important; }
+    .chat-card > #webchat .webchat__fileContent__buttonLink { display: flex !important; align-items: center; gap: 12px; height: 56px; padding: 0 18px 0 12px; border-radius: 18px; text-decoration: none; color: #14142B; background: rgba(255,255,255,.72); -webkit-backdrop-filter: blur(24px) saturate(160%); backdrop-filter: blur(24px) saturate(160%); border: 1px solid rgba(255,255,255,.8); box-shadow: 0 10px 24px -16px rgba(76,70,160,.3), inset 0 1px 1px #fff; }
+    .chat-card > #webchat .webchat__fileContent__buttonLink::before { content: "FILE"; flex: none; padding: 5px 8px; border-radius: 999px; background: linear-gradient(120deg, #EEF0FF, #FBEFFF); color: #5B4BC4; font: 600 10.5px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em; }
+    .chat-card > #webchat a[download$=".pptx" i]::before { content: "PPTX"; } 
+    .chat-card > #webchat a[download$=".docx" i]::before { content: "DOCX"; } 
+    .chat-card > #webchat a[download$=".xlsx" i]::before { content: "XLSX"; } 
+    .chat-card > #webchat a[download$=".html" i]::before { content: "HTML"; }
+    .chat-card > #webchat .webchat__fileContent__badge { flex: 1; min-width: 0; background: none !important; padding: 0 !important; }
+    .chat-card > #webchat .webchat__fileContent__fileName { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace !important; color: #14142B !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-card > #webchat .webchat__fileContent__downloadIcon { flex: none; box-sizing: content-box; width: 16px; height: 16px; padding: 0; fill: #6B6B80; color: #6B6B80; }
+    .chat-card > #webchat .webchat__render-markdown { word-break: keep-all; overflow-wrap: anywhere; }
+    .chat-card > #webchat .webchat__render-markdown table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; border-spacing: 0; margin: 12px 0; font-variant-numeric: tabular-nums; }
+    .chat-card > #webchat .webchat__render-markdown th, .chat-card > #webchat .webchat__render-markdown td { padding: 9px 18px 9px 0; border-bottom: 1px solid rgba(20,20,43,.08); white-space: nowrap; }
+    .chat-card > #webchat .webchat__render-markdown th { font-size: 12px; font-weight: 600; color: #6B6B80; }
+
+    /* 작업 중 오로라 테두리 */
+    @property --aurora { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+    .composer::before { content: ""; position: absolute; inset: -1px; padding: 1.5px; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .6s; background: conic-gradient(from var(--aurora), #a5b4fc, #f0abfc, #fda4af, #fcd34d, #86efac, #67e8f9, #a5b4fc); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: aurora 6s linear infinite; }
+    body.is-working .composer::before { opacity: .8; }
+    @keyframes aurora { to { --aurora: 360deg; } }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 내비게이션 -->
+  <div class="nav-wrap">
+    <nav class="nav">
+      <a href="#" class="nav-brand">
+        <div class="nav-dot"></div>
+        AI Creative Agent Team
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">기능</a></li>
+        <li><a href="#how">작동 방식</a></li>
+        <li><a href="#design">디자인</a></li>
+      </ul>
+      <button class="btn-black" onclick="scrollToChatAndFocus()">지금 써 보기</button>
+    </nav>
+  </div>
+
+  <!-- 2. 히어로 섹션 -->
+  <section class="hero-section" id="hero">
+    <div class="hero-panel mesh glass">
+      <div class="badge">
+        <span>● Copilot Studio 멀티 에이전트</span>
+        <span class="badge-serif">One idea, five deliverables.</span>
+      </div>
+      
+      <h1 class="hero-title">
+        한 줄의 아이디어, <span class="grad-text">다섯 개의 결과물.</span>
+      </h1>
+      
+      <p class="hero-sub">
+        팀장 에이전트가 전문가 다섯에게 일을 나눠, 발표자료부터 예산 분석까지 한 번에 만들어 드려요.
+      </p>
+
+      <!-- 대화창 카드 -->
+      <div class="chat-card glass">
+        <div class="chat-header">
+          <div class="chat-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="chat-title-area">
+            <div class="conn-status-dot" id="connStatusDot"></div>
+            <span>AI Creative Agent Team</span>
+          </div>
+          <button class="btn-glass-sm" onclick="location.reload()">새 대화</button>
+        </div>
+
+        <!-- Web Chat 마운트 영역 -->
+        <div id="webchat"></div>
+
+        <div class="chat-foot">
+          <!-- 예시 칩 -->
+          <div class="example-chips" id="exampleChips">
+            <button class="chip" onclick="sendPrompt('가을 학교 축제 기획해 줘')">가을 학교 축제 기획해 줘</button>
+            <button class="chip" onclick="sendPrompt('탄소중립 캠페인 홍보물 만들어 줘')">탄소중립 캠페인 홍보물 만들어 줘</button>
+            <button class="chip" onclick="sendPrompt('교사 AI 연수 프로그램 제안해 줘')">교사 AI 연수 프로그램 제안해 줘</button>
+          </div>
+
+          <!-- 작업 중 안내 -->
+          <div class="working-status" id="workingStatus">
+            <div class="working-dots">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <span id="workingTimerText">팀이 작업 중 · 0:00</span>
+          </div>
+
+          <!-- 오류 안내 배너 -->
+          <div class="error-banner" id="errorBanner">
+            <span id="errorMsgText">지금은 팀과 연결할 수 없어요</span>
+            <span id="errorDetail" style="font-family: monospace; font-size: 11px; opacity: .8;"></span>
+            <button class="btn-glass-sm" onclick="location.reload()" style="align-self: flex-start; margin-top: 4px;">다시 시도</button>
+          </div>
+
+          <!-- 입력창 컴포저 -->
+          <div class="composer" id="composer">
+            <textarea id="chatInput" rows="1" placeholder="무엇을 만들어 볼까요?" disabled onkeydown="handleKeydown(event)" oninput="autoResizeTextarea(this)"></textarea>
+            <button class="send-btn" id="sendBtn" disabled onclick="submitUserMessage()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            </button>
+          </div>
+
+          <div class="chat-footnote">AI는 실수할 수 있어요. 중요한 내용은 확인하세요.</div>
+        </div>
+      </div>
+
+      <div class="logo-strip">
+        Microsoft Copilot Studio &nbsp;·&nbsp; Claude Opus 5.5 &nbsp;·&nbsp; PowerPoint &nbsp;·&nbsp; Word &nbsp;·&nbsp; Excel &nbsp;·&nbsp; HTML
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 숫자 띠 -->
+  <section class="stats-section" data-reveal>
+    <div class="stats-grid">
+      <div class="stat-card glass">
+        <div class="stat-num grad-text" data-count="1">0</div>
+        <div class="stat-label">번의 요청</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-num grad-text" data-count="6">0</div>
+        <div class="stat-label">명의 에이전트</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-num grad-text" data-count="7">0</div>
+        <div class="stat-label">개의 작업 매뉴얼</div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-num grad-text" data-count="5">0</div>
+        <div class="stat-label">개의 파일</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 기능(#features) -->
+  <section class="features-section" id="features">
+    <div class="section-header" data-reveal>
+      <div class="sec-sub-serif">Five deliverables.</div>
+      <h2 class="sec-title">한 번의 요청으로 받는 다섯 가지</h2>
+    </div>
+
+    <div class="bento-grid">
+      <!-- 1. PPT -->
+      <div class="bento-card glass span-3" data-reveal>
+        <div>
+          <span class="bento-tag">presentation.pptx</span>
+          <div class="bento-heading">
+            <h3>말할 거리가 정리된 슬라이드</h3>
+            <p>10장 내외의 깔끔한 슬라이드와 발표자 노트까지 한 번에 완성됩니다.</p>
+          </div>
+        </div>
+        <div class="mockup-area">
+          <div class="mockup-slide-stack"></div>
+        </div>
+      </div>
+
+      <!-- 2. Poster -->
+      <div class="bento-card glass span-3" data-reveal>
+        <div>
+          <span class="bento-tag">poster.html</span>
+          <div class="bento-heading">
+            <h3>걸어 두고 싶은 한 장</h3>
+            <p>브라우저에서 바로 여는 유리 질감 포스터, 인쇄와 PDF 저장도 완벽해요.</p>
+          </div>
+        </div>
+        <div class="mockup-area">
+          <div class="mockup-poster">POSTER</div>
+        </div>
+      </div>
+
+      <!-- 3. Proposal -->
+      <div class="bento-card glass span-2" data-reveal>
+        <div>
+          <span class="bento-tag">proposal.docx</span>
+          <div class="bento-heading">
+            <h3>바로 보낼 수 있는 제안서</h3>
+            <p>테마 색 표지와 가독성 높은 본문.</p>
+          </div>
+        </div>
+        <div class="mockup-area">
+          <div class="mockup-doc">
+            <div class="mockup-doc-line"></div>
+            <div class="mockup-doc-line"></div>
+            <div class="mockup-doc-line"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Webpage -->
+      <div class="bento-card glass span-2" data-reveal>
+        <div>
+          <span class="bento-tag">webpage.html</span>
+          <div class="bento-heading">
+            <h3>신청까지 받는 랜딩</h3>
+            <p>유리 메뉴 바와 카드로 만든 소개 페이지.</p>
+          </div>
+        </div>
+        <div class="mockup-area">
+          <div class="mockup-browser">
+            <div class="mockup-browser-bar"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Budget -->
+      <div class="bento-card glass span-2" data-reveal>
+        <div>
+          <span class="bento-tag">budget_analysis.xlsx</span>
+          <div class="bento-heading">
+            <h3>숫자가 맞는 예산</h3>
+            <p>숫자 카드와 차트, 합계는 수식으로.</p>
+          </div>
+        </div>
+        <div class="mockup-area">
+          <div class="mockup-budget">
+            <span>₩12,400,000</span>
+            <div class="mockup-bars">
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 작동 방식(#how) -->
+  <section class="how-section" id="how">
+    <div class="section-header" data-reveal>
+      <div class="sec-sub-serif">How the team works.</div>
+      <h2 class="sec-title">팀장 하나, 전문가 다섯, 매뉴얼 일곱.</h2>
+    </div>
+
+    <div class="how-grid" data-reveal>
+      <div class="orbit-card glass">
+        <!-- 요구된 작동 방식 궤도 HTML 그대로 유지 -->
+        <div class="orbit">
+          <div class="orbit-ring">
+            <span class="agent" style="--a:0deg"><b>ppt-agent</b></span>
+            <span class="agent" style="--a:72deg"><b>poster-agent</b></span>
+            <span class="agent" style="--a:144deg"><b>proposal-agent</b></span>
+            <span class="agent" style="--a:216deg"><b>webpage-agent</b></span>
+            <span class="agent" style="--a:288deg"><b>budget-agent</b></span>
+          </div>
+          <div class="leader">팀장</div>
+        </div>
+      </div>
+
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>브리프</h4>
+            <p>요청을 한 장짜리 기획서로 정리하고 컬러 테마를 정해요.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>예산 먼저</h4>
+            <p>budget-agent가 예산 기준표로 모든 금액의 기준을 잡아요.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>원고</h4>
+            <p>전문가들이 같은 브리프로 각자 원고를 써요.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>파일 5개</h4>
+            <p>디자인 규칙에 맞춰 파일을 만들어 한 번에 첨부해요.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 디자인(#design) -->
+  <section class="design-section" id="design">
+    <div class="design-header" data-reveal>
+      <div class="sec-sub-serif">One design language.</div>
+      <h2 class="sec-title">다섯 파일, 하나의 리퀴드 글래스.</h2>
+      <p>재질과 레이아웃은 늘 같고, 색만 주제에 맞게 바뀝니다.</p>
+    </div>
+
+    <div class="theme-grid" data-reveal>
+      <div class="theme-card">
+        <div class="theme-dots"><div class="theme-dot" style="background:#A8D8FF"></div><div class="theme-dot" style="background:#007AFF"></div></div>
+        <div class="theme-name">스카이</div>
+        <div class="theme-desc">교육·일반 행사</div>
+      </div>
+      <div class="theme-card">
+        <div class="theme-dots"><div class="theme-dot" style="background:#1EC8FF"></div><div class="theme-dot" style="background:#FF2E93"></div></div>
+        <div class="theme-name">팝</div>
+        <div class="theme-desc">IT 캠페인·축제</div>
+      </div>
+      <div class="theme-card">
+        <div class="theme-dots"><div class="theme-dot" style="background:#0B1628"></div><div class="theme-dot" style="background:#6EA8FF"></div></div>
+        <div class="theme-name">네이비</div>
+        <div class="theme-desc">공공 보고서·정책</div>
+      </div>
+      <div class="theme-card">
+        <div class="theme-dots"><div class="theme-dot" style="background:#A8E3C4"></div><div class="theme-dot" style="background:#12A150"></div></div>
+        <div class="theme-name">그린</div>
+        <div class="theme-desc">환경·ESG</div>
+      </div>
+      <div class="theme-card">
+        <div class="theme-dots"><div class="theme-dot" style="background:#FFC2B3"></div><div class="theme-dot" style="background:#FF6B4A"></div></div>
+        <div class="theme-name">코럴</div>
+        <div class="theme-desc">가족·복지</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 준비된 프롬프트 마키 -->
+  <section class="prompts-section">
+    <div class="section-header" data-reveal style="margin-bottom: 24px;">
+      <div class="sec-sub-serif">Ready prompts.</div>
+      <h2 class="sec-title" style="font-size: clamp(28px, 3.5vw, 42px);">이런 요청에 강해요</h2>
+    </div>
+
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <button class="prompt-chip" onclick="sendPrompt('가을 학교 축제 기획해 줘')">가을 학교 축제 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('탄소중립 캠페인 홍보물 만들어 줘')">탄소중립 캠페인 홍보물 만들어 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('교사 AI 연수 프로그램 제안해 줘')">교사 AI 연수 프로그램 제안해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('신제품 런칭 행사 기획해 줘')">신제품 런칭 행사 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('진로 체험 주간 프로그램 만들어 줘')">진로 체험 주간 프로그램 만들어 줘</button>
+        <!-- 복제하여 무한 루프 효과 -->
+        <button class="prompt-chip" onclick="sendPrompt('가을 학교 축제 기획해 줘')">가을 학교 축제 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('탄소중립 캠페인 홍보물 만들어 줘')">탄소중립 캠페인 홍보물 만들어 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('교사 AI 연수 프로그램 제안해 줘')">교사 AI 연수 프로그램 제안해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('신제품 런칭 행사 기획해 줘')">신제품 런칭 행사 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('진로 체험 주간 프로그램 만들어 줘')">진로 체험 주간 프로그램 만들어 줘</button>
+      </div>
+      <div class="marquee-track reverse">
+        <button class="prompt-chip" onclick="sendPrompt('지역 축제 홍보 기획해 줘')">지역 축제 홍보 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('고객 제안 워크숍 준비해 줘')">고객 제안 워크숍 준비해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('학부모 설명회 자료 만들어 줘')">학부모 설명회 자료 만들어 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('해커톤 대회 기획해 줘')">해커톤 대회 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('동아리 박람회 제안서 써 줘')">동아리 박람회 제안서 써 줘</button>
+        <!-- 복제 -->
+        <button class="prompt-chip" onclick="sendPrompt('지역 축제 홍보 기획해 줘')">지역 축제 홍보 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('고객 제안 워크숍 준비해 줘')">고객 제안 워크숍 준비해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('학부모 설명회 자료 만들어 줘')">학부모 설명회 자료 만들어 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('해커톤 대회 기획해 줘')">해커톤 대회 기획해 줘</button>
+        <button class="prompt-chip" onclick="sendPrompt('동아리 박람회 제안서 써 줘')">동아리 박람회 제안서 써 줘</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 마지막 CTA 섹션 -->
+  <section class="cta-section">
+    <div class="cta-panel mesh glass" data-reveal>
+      <div class="badge">
+        <span class="badge-serif">Your turn.</span>
+      </div>
+      <h2 class="cta-title">지금, 아이디어 한 줄을<br>적어 보세요.</h2>
+      <button class="btn-black" style="padding: 16px 32px; font-size: 15px;" onclick="scrollToChatAndFocus()">대화 시작하기 ↑</button>
+    </div>
+  </section>
+
+  <!-- 9. 푸터 -->
+  <footer>
+    <div>AI Creative Agent Team &nbsp;·&nbsp; Copilot Studio로 만든 멀티 에이전트</div>
+    <div>© 2026 AI Creative Agent Team. All rights reserved.</div>
+  </footer>
+
+  <!-- 10. 떠 있는 알림 (Floating Pill) -->
+  <div class="floating-pill" id="floatingPill" onclick="scrollToChatAndFocus()">
+    <div class="floating-pill-dot" id="pillDot"></div>
+    <span id="pillText">팀이 작업 중 · 0:00</span>
+  </div>
+
+  <!-- Bot Framework Web Chat CDN -->
+  <script src="https://cdn.botframework.com/botframework-webchat/4.18.0/webchat.js"></script>
+  <script>
+    // 원본 인증 코드 및 브로커 URL (수정 금지)
+    const BROKER_URL = "https://dl-broker-juwon-4jt3z.azurewebsites.net/api/directlineToken";
+    const SEALED = "jgmnpP_NQgsZmWCbW-bEtRuokHS1_Uvc7YPzNyZ5CKsF6n-n05-lQ2pYDDYnfyO8EDO0DuIxxZFK_4khD3ggBNtqJ8Btb5bKx5_KXu_N4uBmikaqrTOsFfW9RMzDulsxuvba9LmG2eTJCu39sPsuSKQgjBlR3Ri84om46iQmImdV_PacV-Aw0Kyoac5PSvTipA2Ai6lszyhyBROeGu6LxbfNm88QJ49d4J5Wp6mBHCemetoFVnyaA6OGFn7WdeUyhkD6SnqMjlVlnVJQWv13JEIUsDsoJYGr_mejZZmSya_5ownIa2-8s0zMQSdOnooksh_CEUe_cfgzooYecXwk2DY0_puLa2hq_odm89exO6bgYjoQZlsWpUURGyRDT6Mz1qVsGUTX7dtDHiwx5mNkGDiF_FEM4ODpgM-XQX1KAoQ7SqVoI5FDO4yJ_g3Y86jOI9F7QI7YxH4tniQaw4Et3pAsvCZL3eaG1sddiODOP96JwlL7FTXY4ZfSOWlteqMc2GpgwC99qBPDGIDoQzdfQO1PYEK3T2TPEC_R8eRgD4FB6C7T484YGrV8HDlPonTQbWsV25nKb9jCdtWEMf09KhXvHsUK9nRbGNOhl8fSxZs8xgZS_-GbOgSKYmc0S4McS6TS2x8bqZx4dvhd0xicfg";
+
+    // UI 요소 참조
+    const chatInput = document.getElementById("chatInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const workingStatus = document.getElementById("workingStatus");
+    const workingTimerText = document.getElementById("workingTimerText");
+    const errorBanner = document.getElementById("errorBanner");
+    const errorMsgText = document.getElementById("errorMsgText");
+    const errorDetail = document.getElementById("errorDetail");
+    const connStatusDot = document.getElementById("connStatusDot");
+    const floatingPill = document.getElementById("floatingPill");
+    const pillText = document.getElementById("pillText");
+    const pillDot = document.getElementById("pillDot");
+
+    let chatStore = null;
+    let workStartTime = null;
+    let timerInterval = null;
+    let isWorkingActive = false;
+    let hasReceivedInitialGreeting = false;
+
+    // 대화창 위치로 스크롤 및 포커스 이동 공통 함수
+    function scrollToChatAndFocus() {
+      const heroCard = document.querySelector(".chat-card");
+      if (heroCard) {
+        window.scrollTo({
+          top: heroCard.getBoundingClientRect().top + window.scrollY - 88,
+          behavior: "smooth"
+        });
+        setTimeout(() => {
+          chatInput.focus({ preventScroll: true });
+        }, 400);
+      }
+    }
+
+    // textarea 자동 높이 조절
+    function autoResizeTextarea(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+    }
+
+    // 엔터 전송 처리 (Shift+Enter 줄바꿈, 한글 조합 중 Enter 무시)
+    function handleKeydown(e) {
+      if (e.keyCode === 229 || e.isComposing) return;
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        submitUserMessage();
+      }
+    }
+
+    // 메시지 전송 함수
+    function submitUserMessage() {
+      const text = chatInput.value.trim();
+      if (!text || !chatStore) return;
+
+      // is-started 클래스 부여 (대화창 화면 높이로 확장)
+      document.body.classList.add("is-started");
+
+      // 작업 중 상태 진입
+      setWorkingState(true);
+
+      // Web Chat 스토어 dispatch로 메시지 전송
+      chatStore.dispatch({
+        type: "WEB_CHAT/SEND_MESSAGE",
+        payload: { text }
+      });
+
+      chatInput.value = "";
+      chatInput.style.height = 'auto';
+      sendBtn.disabled = true;
+
+      // 전송 후 입력창 포커스 유지
+      chatInput.focus({ preventScroll: true });
+    }
+
+    // 칩 클릭 시 입력창에 반영 후 바로 전송
+    function sendPrompt(text) {
+      chatInput.value = text;
+      autoResizeTextarea(chatInput);
+      sendBtn.disabled = false;
+      scrollToChatAndFocus();
+      setTimeout(() => {
+        submitUserMessage();
+      }, 300);
+    }
+
+    // 작업 중 상태 관리 및 타이머
+    function setWorkingState(active) {
+      isWorkingActive = active;
+      if (active) {
+        document.body.classList.add("is-working");
+        workStartTime = Date.now();
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          const elapsedSec = Math.floor((Date.now() - workStartTime) / 1000);
+          const min = Math.floor(elapsedSec / 60);
+          const sec = elapsedSec % 60;
+          const timeStr = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+          
+          let msg = `팀이 작업 중 · ${timeStr}`;
+          if (elapsedSec > 20) {
+            msg = `파일 5개를 만드느라 몇 분 걸릴 수 있어요 · ${timeStr}`;
+          }
+          workingTimerText.textContent = msg;
+          pillText.textContent = msg;
+        }, 1000);
+      } else {
+        document.body.classList.remove("is-working");
+        if (timerInterval) clearInterval(timerInterval);
+        pillText.textContent = "결과가 도착했어요 ↑";
+      }
+    }
+
+    // 에러 표시 함수
+    function showError(message, detail = "") {
+      errorBanner.style.display = "flex";
+      document.body.classList.add("is-error");
+      errorMsgText.textContent = message;
+      if (detail) errorDetail.textContent = detail;
+      chatInput.placeholder = "지금은 팀과 연결할 수 없어요";
+    }
+
+    // IntersectionObserver로 스크롤 등장 효과 및 숫자 카운트업
+    document.addEventListener("DOMContentLoaded", () => {
+      const observerOpts = { threshold: 0.1 };
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            
+            // 숫자 카운트업 실행
+            const counters = entry.target.querySelectorAll("[data-count]");
+            counters.forEach(counter => {
+              const targetNum = parseInt(counter.getAttribute("data-count"), 10);
+              let current = 0;
+              const duration = 1200;
+              const stepTime = Math.max(Math.floor(duration / targetNum), 30);
+              const timer = setInterval(() => {
+                current += 1;
+                counter.textContent = current;
+                if (current >= targetNum) {
+                  counter.textContent = targetNum;
+                  clearInterval(timer);
+                }
+              }, stepTime);
+            }, { once: true });
+
+            obs.unobserve(entry.target);
+          }
+        });
+      }, observerOpts);
+
+      document.querySelectorAll("[data-reveal]").forEach(el => observer.observe(el));
+
+      // 스크롤 위치에 따른 떠 있는 알림(Floating Pill) 표시 제어
+      window.addEventListener("scroll", () => {
+        const chatCardEl = document.querySelector(".chat-card");
+        if (!chatCardEl) return;
+        const rect = chatCardEl.getBoundingClientRect();
+        const isChatVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (!isChatVisible && isWorkingActive) {
+          floatingPill.classList.add("is-visible");
+        } else {
+          floatingPill.classList.remove("is-visible");
+        }
+      });
+    });
+
+    // Web Chat 연결 및 초기화 메인 로직
+    async function connectChat() {
       if (!window.WebChat ||
           typeof WebChat.createDirectLine !== "function" ||
           typeof WebChat.renderWebChat !== "function") {
-        showError("채팅 구성 요소를 불러오지 못했습니다. 네트워크를 확인한 뒤 새로고침해 주세요.");
+        showError("채팅 구성 요소를 불러오지 못했습니다.");
         return;
       }
 
       let response;
       try {
-        // Keep this a simple CORS request; the broker may not support preflight.
         response = await fetch(BROKER_URL, {
           method: "POST",
           body: JSON.stringify({ sealed: SEALED })
         });
-      } catch {
-        showError("서버에 연결하지 못했습니다. 네트워크와 배포 주소를 확인해 주세요.");
+      } catch (err) {
+        showError("서버에 연결하지 못했습니다.", err.message);
         return;
       }
+
       if (!response.ok) {
-        showError("서버가 연결 요청을 처리하지 못했습니다 (HTTP " + response.status + ").");
+        showError("서버가 연결 요청을 처리하지 못했습니다.", "HTTP " + response.status);
         return;
       }
 
       let data;
       try {
         data = await response.json();
-      } catch {
-        showError("서버 응답을 읽을 수 없습니다. 잠시 후 다시 시도해 주세요.");
+      } catch (err) {
+        showError("서버 응답을 읽을 수 없습니다.", err.message);
         return;
       }
+
       if (!data || typeof data.token !== "string" || !data.token.trim()) {
-        showError("서버에서 연결 토큰을 받지 못했습니다. 암호와 배포 주소를 확인해 주세요.");
+        showError("서버에서 연결 토큰을 받지 못했습니다.");
         return;
       }
 
       try {
+        // 미들웨어를 포함한 Redux Store 생성
+        chatStore = WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === "DIRECT_LINE/CONNECT_FULFILLED") {
+            // 연결 완료 시
+            document.body.classList.add("is-connected");
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            chatInput.placeholder = "무엇을 만들어 볼까요?";
+          }
+
+          if (action.type === "DIRECT_LINE/INCOMING_ACTIVITY") {
+            const activity = action.payload.activity;
+            // 에이전트로부터 온 메시지인 경우 (role이 user가 아님)
+            if (activity && activity.from && activity.from.role !== "user") {
+              if (activity.type === "message") {
+                // 응답 도착 시 작업 중 상태 해제
+                setWorkingState(false);
+                hasReceivedInitialGreeting = true;
+                // 첫 인사말인 경우 is-started를 붙이지 않음 (요구사항 반영)
+              }
+            }
+          }
+
+          return next(action);
+        });
+
         const directLine = WebChat.createDirectLine({ token: data.token });
-        status.hidden = true;
+
+        // 첫 인사 요청 event 발송
         directLine.postActivity({
           type: "event", name: "startConversation", from: { id: "user" }
         }).subscribe({
-          error: () => showError("첫 인사를 요청하지 못했습니다. 채팅창에 메시지를 입력해 주세요.")
+          error: () => showError("첫 인사를 요청하지 못했습니다.")
         });
-        WebChat.renderWebChat({ directLine, locale: "ko-KR" }, document.getElementById("webchat"));
-      } catch {
-        showError("채팅을 시작하지 못했습니다. 새로고침 후 다시 시도해 주세요.");
+
+        // Web Chat 렌더링 설정
+        const styleOptions = {
+          hideSendBox: true,
+          rootHeight: "100%",
+          backgroundColor: "transparent",
+          primaryFont: "'Pretendard Variable', -apple-system, sans-serif",
+          bubbleBackground: "transparent",
+          bubbleBorderWidth: 0,
+          bubbleMaxWidth: 720,
+          bubbleMinWidth: 0,
+          bubbleFromUserBackground: "linear-gradient(135deg, #EEF0FF, #FBEFFF)",
+          bubbleFromUserBorderWidth: 0,
+          bubbleFromUserBorderRadius: 20
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: chatStore,
+            styleOptions,
+            locale: "ko-KR"
+          },
+          document.getElementById("webchat")
+        );
+
+      } catch (err) {
+        showError("채팅을 시작하지 못했습니다.", err.message);
       }
     }
 
-    connect();
+    // 연결 실행
+    connectChat();
   </script>
 </body>
 </html>
